@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Signup | Draftora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center">
+
+  <div class="bg-gray-900 p-8 rounded-2xl shadow-lg w-full max-w-md">
+
+    <h1 class="text-3xl font-bold text-center mb-6">Create Account</h1>
+
+    <form action="/signup" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+      <input type="text" name="name" placeholder="Full Name" required class="w-full p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <input type="email" name="email" placeholder="Email Address" required class="w-full p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <input type="password" name="password" placeholder="Password" required class="w-full p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <div>
+        <label class="text-sm text-gray-400">Profile Image</label>
+        <input type="file" name="profileImage" class="w-full mt-1 text-sm text-gray-300" />
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 transition p-3 rounded-lg font-semibold">
+        Sign Up
+      </button>
+
+    </form>
+
+    <p class="text-center text-gray-400 mt-4">
+      Already have an account?
+      <a href="/login" class="text-blue-400 hover:underline">Login</a>
+    </p>
+
+  </div>
+
+</body>
+
+</html>

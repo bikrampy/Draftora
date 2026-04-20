@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Blog | Draftora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-950 text-white">
+
+  <%- include('../partials/navbar') %>
+
+  <div class="min-h-screen flex items-center justify-center px-4">
+
+    <div class="bg-gray-900/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-lg">
+
+      <div class="mb-6 text-center">
+        <h1 class="text-3xl font-bold">Edit Blog</h1>
+        <p class="text-gray-400 text-sm">Update your content and keep it fresh ✨</p>
+      </div>
+
+      <form action="/blog/edit/<%= blog._id %>" method="POST" enctype="multipart/form-data" class="space-y-5">
+
+        <div>
+          <label class="text-sm text-gray-400">Title</label>
+          <input type="text" name="title" value="<%= blog.title %>" required class="w-full mt-1 p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-400">Content</label>
+          <textarea name="content" rows="5" class="w-full mt-1 p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-500"><%= blog.content %></textarea>
+        </div>
+
+        <div>
+          <p class="text-sm text-gray-400 mb-1">Current Cover</p>
+          <img src="<%= blog.coverImage %>" class="w-full h-40 object-cover rounded-lg border border-gray-700" />
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-400">Change Cover Image</label>
+          <input type="file" name="coverImage" class="w-full mt-1 text-sm text-gray-300" />
+        </div>
+
+        <div class="flex gap-3">
+
+          <button type="submit" class="flex-1 bg-yellow-500 hover:bg-yellow-600 transition p-3 rounded-lg font-semibold">
+            Update Blog
+          </button>
+
+          <a href="/dashboard" class="flex-1 text-center bg-gray-700 hover:bg-gray-600 transition p-3 rounded-lg">
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

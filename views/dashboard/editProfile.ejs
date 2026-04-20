@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Profile | Draftora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-950 text-white">
+
+  <%- include('../partials/navbar') %>
+
+  <div class="min-h-screen flex items-center justify-center px-4">
+
+    <div class="bg-gray-900/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-lg">
+
+
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold">Edit Profile</h1>
+        <p class="text-gray-400 text-sm">Update your personal information</p>
+      </div>
+
+      <div class="flex justify-center mb-6">
+        <img src="<%= user.profileImage %>" class="w-24 h-24 rounded-full object-cover border-2 border-gray-700 shadow-md" />
+      </div>
+
+      <form action="/profile/update" method="POST" enctype="multipart/form-data" class="space-y-5">
+
+        <div>
+          <label class="text-sm text-gray-400">Full Name</label>
+          <input type="text" name="name" value="<%= user.name %>" required class="w-full mt-1 p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-400">Email Address</label>
+          <input type="email" name="email" value="<%= user.email %>" required class="w-full mt-1 p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-400">Change Profile Image</label>
+          <input type="file" name="profileImage" class="w-full mt-1 text-sm text-gray-300" />
+        </div>
+
+        <div class="flex gap-3">
+
+          <button type="submit" class="flex-1 bg-green-500 hover:bg-green-600 transition p-3 rounded-lg font-semibold">
+            Update Profile
+          </button>
+
+          <a href="/dashboard" class="flex-1 text-center bg-gray-700 hover:bg-gray-600 transition p-3 rounded-lg">
+            Cancel
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>
