@@ -22,7 +22,7 @@ export const updateProfile = async (req, res) => {
         user.name = name;
         user.email = email;
         if (req.file) {
-            user.profileImage = `/uploads/${req.file.filename}`;
+            user.profileImage = req.file.path;
         }
         await user.save();
         res.redirect("/dashboard");

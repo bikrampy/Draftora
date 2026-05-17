@@ -1,21 +1,14 @@
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads/");
-    },
-    filename: function (req, file, cb) {
-        const uniqueName = Date.now() + file.originalname;
-        cb(null, uniqueName);
-    },
+const storage = new CloudinaryStorage({
+    cloudinary,
+
+    params: async (req, file) => ({
+        folder: "draftora",
+        allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    }),
 });
 
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image")) {
-        cb(null, true);
-    } else {
-        cb(new Error("Only images allowed"), false);
-    }
-};
-
-export const upload = multer({ storage, fileFilter });
+export const upload = multer({ storage });

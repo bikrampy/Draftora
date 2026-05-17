@@ -12,7 +12,7 @@ const blogSchema = new mongoose.Schema(
         },
         coverImage: {
             type: String,
-            default: "/uploads/blogDefault.png",
+            default: "/blogDefault.png",
         },
         author: {
             type: mongoose.Schema.Types.ObjectId,

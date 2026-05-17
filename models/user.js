@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
         },
         profileImage: {
             type: String,
-            default: "/uploads/profileDefault.jpg",
+            default: "/profileDefault.jpg",
         },
         resetOtp: { type: String },
         resetOtpExpiry: { type: Date },

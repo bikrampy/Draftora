@@ -15,9 +15,7 @@ export const signup = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            profileImage: req.file
-                ? `/uploads/${req.file.filename}`
-                : undefined,
+            profileImage: req.file ? req.file.path : undefined,
         });
         res.redirect("/login");
     } catch (error) {

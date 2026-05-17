@@ -7,7 +7,7 @@ export const createBlog = async (req, res) => {
             title,
             content,
             author: req.user._id,
-            coverImage: req.file ? `/uploads/${req.file.filename}` : undefined,
+            coverImage: req.file ? req.file.path : undefined,
         });
         res.redirect("/dashboard");
     } catch (error) {
@@ -49,7 +49,7 @@ export const updateBlog = async (req, res) => {
         blog.title = title;
         blog.content = content;
         if (req.file) {
-            blog.coverImage = `/uploads/${req.file.filename}`;
+            blog.coverImage = req.file.path;
         }
         await blog.save();
         res.redirect("/dashboard");
