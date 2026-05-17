@@ -1,32 +1,31 @@
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-dotenv.config();
-
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
+import resend from "./resend.js";
 
 export const sendOtpMail = async (email, otp) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"Draftora" <${process.env.EMAIL_USER}>`,
+        const response = await resend.emails.send({
+            from: "Draftora <onboarding@resend.dev>",
             to: email,
             subject: "Draftora Password Reset OTP",
+
             html: `
+        <div style="font-family:sans-serif;padding:20px;">
           <h2>Password Reset Request</h2>
+
           <p>Your OTP is:</p>
-          <h1>${otp}</h1>
+
+          <h1 style="letter-spacing:5px;">
+            ${otp}
+          </h1>
+
           <p>This OTP expires in 5 minutes.</p>
-        `,
+        </div>
+      `,
         });
+
+        console.log("Email sent:", response);
     } catch (error) {
-        console.log("MAIL ERROR:", error);
+        console.log("RESEND ERROR:", error);
+
         throw error;
     }
 };
