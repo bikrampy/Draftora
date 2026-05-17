@@ -60,5 +60,5 @@ app.use("/", blogRoutes);
 app.use("/", userRoutes);
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
