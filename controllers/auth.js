@@ -1,7 +1,12 @@
-import User from "../models/user.js";
-import { sendOtpMail } from "../config/sendMail.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
+import User from "../models/user.js";
+import cloudinary from "../config/cloudinary.js";
+import { sendOtpMail } from "../config/sendMail.js";
 
 export const signup = async (req, res) => {
     try {
@@ -16,6 +21,7 @@ export const signup = async (req, res) => {
             email,
             password: hashedPassword,
             profileImage: req.file ? req.file.path : undefined,
+            profileImagePublicId: req.file ? req.file.filename : null,
         });
         res.redirect("/login");
     } catch (error) {
@@ -47,16 +53,12 @@ export const logout = (req, res) => {
     res.redirect("/login");
 };
 
-export const showForgotPasswordPage = (req, res) => {
-    res.render("auth/forgotPassword");
-};
-
 export const sendForgotOtp = async (req, res) => {
     try {
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            return res.redirect("/verify-otp?email=" + email);
+            res.send("No account found");
         }
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         user.resetOtp = otp;
@@ -68,11 +70,6 @@ export const sendForgotOtp = async (req, res) => {
     } catch (error) {
         res.send("Something went wrong");
     }
-};
-
-export const showVerifyOtpPage = (req, res) => {
-    const { email } = req.query;
-    res.render("auth/verifyOtp", { email });
 };
 
 export const verifyForgotOtp = async (req, res) => {
@@ -96,12 +93,12 @@ export const verifyForgotOtp = async (req, res) => {
     }
 };
 
-export const resendForgotOtp = async (req, res) => {
+export const resendOtp = async (req, res) => {
     try {
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            return res.redirect("/verify-otp?email=" + email);
+            res.send("No account found");
         }
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         user.resetOtp = otp;
@@ -113,15 +110,6 @@ export const resendForgotOtp = async (req, res) => {
     } catch (error) {
         res.send("Something went wrong");
     }
-};
-
-export const showResetPasswordPage = async (req, res) => {
-    const { email } = req.query;
-    const user = await User.findOne({ email });
-    if (!user || !user.otpVerified) {
-        return res.redirect("/forgot-password");
-    }
-    res.render("auth/resetPassword", { email });
 };
 
 export const resetPassword = async (req, res) => {

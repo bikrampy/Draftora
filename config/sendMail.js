@@ -3,7 +3,7 @@ import resend from "./resend.js";
 export const sendOtpMail = async (email, otp) => {
     try {
         const response = await resend.emails.send({
-            from: "Draftora <onboarding@resend.dev>",
+            from: "Draftora <noreply@beingbifrons.shop>",
             to: email,
             subject: "Draftora Password Reset OTP",
 
@@ -21,11 +21,8 @@ export const sendOtpMail = async (email, otp) => {
         </div>
       `,
         });
-
-        console.log("Email sent:", response);
     } catch (error) {
         console.log("RESEND ERROR:", error);
-
         throw error;
     }
 };

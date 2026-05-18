@@ -1,6 +1,6 @@
 import Blog from "../models/blog.js";
 import User from "../models/user.js";
-
+import cloudinary from "../config/cloudinary.js";
 export const getDashboard = async (req, res) => {
     try {
         const blogs = await Blog.find({ author: req.user._id }).sort({
@@ -22,7 +22,11 @@ export const updateProfile = async (req, res) => {
         user.name = name;
         user.email = email;
         if (req.file) {
+            if (user.profileImagePublicId) {
+                await cloudinary.uploader.destroy(user.profileImagePublicId);
+            }
             user.profileImage = req.file.path;
+            user.profileImagePublicId = req.file.filename;
         }
         await user.save();
         res.redirect("/dashboard");

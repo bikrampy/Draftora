@@ -1,5 +1,5 @@
 import Blog from "../models/blog.js";
-
+import cloudinary from "../config/cloudinary.js";
 export const createBlog = async (req, res) => {
     try {
         const { title, content } = req.body;
@@ -8,6 +8,7 @@ export const createBlog = async (req, res) => {
             content,
             author: req.user._id,
             coverImage: req.file ? req.file.path : undefined,
+            coverImagePublicId: req.file ? req.file.filename : null,
         });
         res.redirect("/dashboard");
     } catch (error) {
@@ -38,10 +39,20 @@ export const getSingleBlog = async (req, res) => {
     }
 };
 
+export const getUpdateBlog = async (req, res) => {
+    const blog = await Blog.findById(req.params.id);
+    if (blog.author.toString() !== req.user._id.toString()) {
+        return res.send("Unauthorized");
+    }
+    res.render("blog/editBlog", { blog });
+};
+
 export const updateBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
-        // 🔐 Authorization check
+        if (!blog) {
+            return res.send("Blog not found");
+        }
         if (blog.author.toString() !== req.user._id.toString()) {
             return res.send("Unauthorized");
         }
@@ -49,7 +60,11 @@ export const updateBlog = async (req, res) => {
         blog.title = title;
         blog.content = content;
         if (req.file) {
+            if (blog.coverImagePublicId) {
+                await cloudinary.uploader.destroy(blog.coverImagePublicId);
+            }
             blog.coverImage = req.file.path;
+            blog.coverImagePublicId = req.file.filename;
         }
         await blog.save();
         res.redirect("/dashboard");
@@ -58,20 +73,14 @@ export const updateBlog = async (req, res) => {
     }
 };
 
-export const updateBlogPage = async (req, res) => {
-    const blog = await Blog.findById(req.params.id);
-    if (blog.author.toString() !== req.user._id.toString()) {
-        return res.send("Unauthorized");
-    }
-    res.render("blog/editBlog", { blog });
-};
-
 export const deleteBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
-        // 🔐 Authorization check
         if (blog.author.toString() !== req.user._id.toString()) {
             return res.send("Unauthorized");
+        }
+        if (blog.coverImagePublicId) {
+            await cloudinary.uploader.destroy(blog.coverImagePublicId);
         }
         await Blog.findByIdAndDelete(req.params.id);
         res.redirect("/dashboard");

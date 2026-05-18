@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "/profileDefault.jpg",
         },
+        profileImagePublicId: {
+            type: String,
+        },
         resetOtp: { type: String },
         resetOtpExpiry: { type: Date },
         otpVerified: {

@@ -14,6 +14,9 @@ const blogSchema = new mongoose.Schema(
             type: String,
             default: "/blogDefault.png",
         },
+        coverImagePublicId: {
+            type: String,
+        },
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
