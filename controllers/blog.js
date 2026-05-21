@@ -1,8 +1,13 @@
+import sanitizeHtml from "sanitize-html";
+
 import Blog from "../models/blog.js";
 import cloudinary from "../config/cloudinary.js";
+
 export const createBlog = async (req, res) => {
     try {
-        const { title, content } = req.body;
+        let { title, content } = req.body;
+        title = sanitizeHtml(title);
+        content = sanitizeHtml(content);
         await Blog.create({
             title,
             content,
@@ -10,7 +15,8 @@ export const createBlog = async (req, res) => {
             coverImage: req.file ? req.file.path : undefined,
             coverImagePublicId: req.file ? req.file.filename : null,
         });
-        res.redirect("/dashboard");
+        req.flash("success", "Your blog has been published successfully.");
+        return res.redirect("/dashboard");
     } catch (error) {
         res.send("Error creating blog");
     }
@@ -21,7 +27,7 @@ export const getAllBlogs = async (req, res) => {
         const blogs = await Blog.find()
             .populate("author", "name profileImage")
             .sort({ createdAt: -1 });
-        res.render("blog/allBlogs", { blogs });
+        return res.render("blog/allBlogs", { blogs });
     } catch (error) {
         res.send("Error fetching blogs");
     }
@@ -33,7 +39,7 @@ export const getSingleBlog = async (req, res) => {
             "author",
             "name profileImage",
         );
-        res.render("blog/singleBlog", { blog });
+        return res.render("blog/singleBlog", { blog });
     } catch (error) {
         res.send("Blog not found");
     }
@@ -41,6 +47,10 @@ export const getSingleBlog = async (req, res) => {
 
 export const getUpdateBlog = async (req, res) => {
     const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+        req.flash("error", "Blog not found.");
+        return res.redirect("/dashboard");
+    }
     if (blog.author.toString() !== req.user._id.toString()) {
         return res.send("Unauthorized");
     }
@@ -51,12 +61,15 @@ export const updateBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
         if (!blog) {
-            return res.send("Blog not found");
+            req.flash("error", "Blog not found.");
+            return res.redirect("/dashboard");
         }
         if (blog.author.toString() !== req.user._id.toString()) {
             return res.send("Unauthorized");
         }
-        const { title, content } = req.body;
+        let { title, content } = req.body;
+        title = sanitizeHtml(title);
+        content = sanitizeHtml(content);
         blog.title = title;
         blog.content = content;
         if (req.file) {
@@ -67,6 +80,7 @@ export const updateBlog = async (req, res) => {
             blog.coverImagePublicId = req.file.filename;
         }
         await blog.save();
+        req.flash("success", "Your blog has been updated successfully.");
         res.redirect("/dashboard");
     } catch (error) {
         res.send("Error updating blog");
@@ -76,6 +90,10 @@ export const updateBlog = async (req, res) => {
 export const deleteBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
+        if (!blog) {
+            req.flash("error", "Blog not found.");
+            return res.redirect("/dashboard");
+        }
         if (blog.author.toString() !== req.user._id.toString()) {
             return res.send("Unauthorized");
         }
@@ -83,6 +101,7 @@ export const deleteBlog = async (req, res) => {
             await cloudinary.uploader.destroy(blog.coverImagePublicId);
         }
         await Blog.findByIdAndDelete(req.params.id);
+        req.flash("success", "Your blog has been deleted successfully.");
         res.redirect("/dashboard");
     } catch (error) {
         res.send("Error deleting blog");

@@ -9,27 +9,47 @@ import {
     resendOtp,
     resetPassword,
 } from "../controllers/auth.js";
+
 import User from "../models/user.js";
+
 import { upload } from "../middlewares/upload.js";
+import { authLimiter } from "../middlewares/rateLimiter.js";
+import {
+    validateSignup,
+    validateLogin,
+    handleValidationErrors,
+} from "../middlewares/validation.js";
 
 const router = express.Router();
 
 router.get("/signup", (req, res) => res.render("auth/signup"));
 router.get("/login", (req, res) => res.render("auth/login"));
 
-router.post("/signup", upload.single("profileImage"), signup);
-router.post("/login", login);
+router.post(
+    "/signup",
+    upload.single("profileImage"),
+    validateSignup,
+    handleValidationErrors,
+    signup,
+);
+router.post(
+    "/login",
+    validateLogin,
+    handleValidationErrors,
+    authLimiter,
+    login,
+);
 
 router.get("/logout", logout);
 
 router.get("/forgot-password", (req, res) => res.render("auth/forgotPassword"));
-router.post("/forgot-password", sendForgotOtp);
+router.post("/forgot-password", authLimiter, sendForgotOtp);
 
 router.get("/verify-otp", (req, res) => {
     const { email } = req.query;
     res.render("auth/verifyOtp", { email });
 });
-router.post("/verify-otp", verifyForgotOtp);
+router.post("/verify-otp", authLimiter, verifyForgotOtp);
 
 router.post("/resend-otp", resendOtp);
 

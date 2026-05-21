@@ -29,7 +29,8 @@ export const updateProfile = async (req, res) => {
             user.profileImagePublicId = req.file.filename;
         }
         await user.save();
-        res.redirect("/dashboard");
+        req.flash("success", "Your profile was updated successfully.");
+        return res.redirect("/dashboard");
     } catch (error) {
         res.send("Profile update error");
     }
